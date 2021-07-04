@@ -1,24 +1,44 @@
 import logging
 
 import azure.functions as func
+from PIL import Image
+import io
+import json
 
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
-    name = req.params.get('name')
-    if not name:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            pass
-        else:
-            name = req_body.get('name')
+    bin_image = req.get_body()
+    #if not bin_image:
+    ##    try:
+     #       req_body = req.get_body()
+     #   except ValueError:
+     #       pass
+     #   else:
+     #       bin_image = req_body.get('image')
 
-    if name:
-        return func.HttpResponse(f"Hello, {name}. This HTTP triggered function executed successfully.")
-    else:
+    #try:
+    #    image = Image.open(io.BytesIO(bin_image))
+    #    print("returned successfully")
+    #except IOError:
+    #    return func.HttpResponse(
+    #        "Bad input. Unable to cast request body to an image format.",
+    #        status_code=400
+    #    )
+
+    categories = {"classification": "dog"}
+
+    try:
+        json_object = json.dumps(categories, indent = 4)  
+        print("returned successfully")
+    except IOError:
         return func.HttpResponse(
-             "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
-             status_code=200
+            "Unable to convert to json",
+            status_code=400
         )
+
+    # Return category
+    return func.HttpResponse(
+        json_object,
+        status_code=200)
