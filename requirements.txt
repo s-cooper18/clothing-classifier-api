@@ -5,3 +5,6 @@
 azure-functions
 Pillow
 jsons
+torch
+fastai[dev]
+spacy
