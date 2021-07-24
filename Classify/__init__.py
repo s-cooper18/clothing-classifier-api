@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 import os
 from fastai.vision import learner
+from helpers import get_x, get_y
 
 # temporary filename for image stored
 tempfilename = "image.jpg"
@@ -35,7 +36,9 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     categories = {"classification": "dog"}
     # categories = classify_function
 
-    categories = classify(tempfilename)
+    pathToModel = 'export.pkl' 
+
+    categories = classify(tempfilename, pathToModel)
 
     # Convert to json object to send
     try:
@@ -53,8 +56,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         status_code=200)
 
 
-def classify(image):
+def classify(image, modelPath):
     path = Path(os.getcwd())
-    this_learner = learner.load_learner(path/'export.pkl')
+    this_learner = learner.load_learner(path/modelPath)
     output = this_learner.predict(image)
     return {"classification": output[0]}
