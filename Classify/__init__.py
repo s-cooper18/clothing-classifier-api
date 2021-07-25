@@ -36,10 +36,14 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     categories = {"classification": "dog"}
     # categories = classify_function
 
+<<<<<<< HEAD
     pathToModel = 'export.pkl' 
 
     categories = classify(tempfilename, pathToModel)
 
+=======
+    categories = classify(tempfilename)
+>>>>>>> 101906a (azure function able to classify items)
     # Convert to json object to send
     try:
         json_object = json.dumps(categories, indent = 4)  
@@ -60,4 +64,8 @@ def classify(image, modelPath):
     path = Path(os.getcwd())
     this_learner = learner.load_learner(path/modelPath)
     output = this_learner.predict(image)
-    return {"classification": output[0]}
+    # return correct output
+    categories = output[0]
+    loss_values = output[2][output[1]]
+    category_loss_dict = [{"category": categories[i], "loss": loss_values[i].item()} for i in range(len(categories))]
+    return category_loss_dict
