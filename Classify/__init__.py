@@ -6,7 +6,6 @@ import json
 from pathlib import Path
 import os
 from fastai.vision import learner
-from helpers import get_x, get_y
 
 # temporary filename for image stored
 tempfilename = "image.jpg"
@@ -36,17 +35,13 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     categories = {"classification": "dog"}
     # categories = classify_function
 
-<<<<<<< HEAD
-    pathToModel = 'export.pkl' 
-
-    categories = classify(tempfilename, pathToModel)
-
-=======
-    categories = classify(tempfilename)
->>>>>>> 101906a (azure function able to classify items)
+    categories = classify(tempfilename, "multi_label_model_subset.pkl")
     # Convert to json object to send
+
+    this_json = {"categories": categories}
+
     try:
-        json_object = json.dumps(categories, indent = 4)  
+        json_object = json.dumps(this_json, indent = 4)  
         print("returned successfully")
     except IOError:
         return func.HttpResponse(
